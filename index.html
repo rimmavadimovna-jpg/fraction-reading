@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Найди целое | Математика на английском</title>
+<style>
+  :root { --font-size-base: 17px; color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: clamp(1rem, 5vw, 3rem); font: 1.0625rem/1.55 "Segoe UI", system-ui, sans-serif; color: light-dark(#17243b, #edf3ff); background: light-dark(#eff5f8, #101a2b); }
+  main { max-width: 43rem; margin-inline: auto; }
+  h2 { margin: 0; font-size: clamp(1.65rem, 5vw, 2.5rem); line-height: 1.15; letter-spacing: -.03em; }
+  p { margin: 0; }
+  header p + p { margin-top: .5rem; }
+  .text-muted, [data-role="status"] { color: light-dark(#445571, #b7c7e1); }
+  [data-role="status"], [data-role="prompt"] { font-weight: 650; }
+  .card { background: light-dark(#fff, #1b2a43); border-inline-start: .3rem solid light-dark(#187968, #6ad8bf); border-radius: .65rem; padding: 1rem; }
+  [data-role="english"] { font-size: 1.2rem; }
+  .viz-row { display: flex; flex-wrap: wrap; gap: .55rem; align-items: center; }
+  button, input { font: inherit; }
+  .btn, input { min-height: 2.75rem; border: 1px solid light-dark(#8b9db6, #778aa9); border-radius: .6rem; padding: .45rem .8rem; color: inherit; background: light-dark(#fff, #1b2a43); }
+  .btn:not(:disabled), summary { cursor: pointer; }
+  .btn:not(:disabled):hover { background: light-dark(#e0f2ed, #29475b); }
+  .btn-primary, .btn-primary:not(:disabled):hover { background: light-dark(#116454, #8ce6d1); color: light-dark(#fff, #102d29); border-color: transparent; font-weight: 650; }
+  .btn-ghost { background: transparent; }
+  :focus-visible { outline: 3px solid light-dark(#215eb8, #9abaff); outline-offset: 3px; }
+  #fraction-reading .choices { justify-items: stretch; }
+  #fraction-reading .choices button:disabled:not(.correct) { opacity: .67; }
+  #fraction-reading .choices .correct { border-color: light-dark(#187968, #6ad8bf); background: light-dark(#e0f2ed, #23483f); }
+  details { border-bottom: 1px solid light-dark(#c2cedb, #465976); padding-block: .3rem; }
+  details p + p { margin-top: .5rem; }
+  form { margin-block: .5rem; }
+  form input { width: 8rem; max-width: 100%; }
+  #numeric-feedback { min-height: 1.65rem; }
+</style>
+</head>
+<body>
+<main>
+<section id="fraction-reading" lang="ru">
+  <style>
+    #fraction-reading { display: grid; gap: calc(var(--font-size-base) * .8); }
+    #fraction-reading .choices { display: grid; gap: calc(var(--font-size-base) * .4); justify-items: start; }
+    #fraction-reading .choices button { white-space: normal; text-align: start; }
+    #fraction-reading [hidden] { display: none !important; }
+    #fraction-reading summary { margin-block-end: calc(var(--font-size-base) * .4); }
+    #fraction-reading .actions { justify-content: flex-start; }
+  </style>
+  <header>
+    <h2>Прочитай задачу: найди целое</h2>
+    <p lang="en" class="text-muted">Fraction of an amount – find the whole</p><p>Прочитай задачу и выбери, что известно и что нужно найти.</p>
+  </header>
+  <details>
+    <summary>Пример и словарик</summary>
+    <p lang="en">Mia has read 2/5 of her book. She has read 18 pages. How many pages are there in the book altogether?</p>
+    <p>Миа прочитала 2/5 книги — это 18 страниц. Вопрос про все страницы книги. Схема: 2/5 книги = 18 страниц, вся книга = ?</p>
+    <ul>
+      <li><span lang="en">of her book</span> — от всей её книги</li>
+      <li><span lang="en">altogether / in total</span> — всего</li>
+      <li><span lang="en">at first / to begin with / originally</span> — сначала, изначально</li>
+      <li><span lang="en">has … left / remains</span> — осталось</li>
+      <li><span lang="en">the rest / the remaining …</span> — остальное / оставшиеся …</li>
+      <li><span lang="en">full length / full capacity</span> — полная длина / вместимость</li>
+      <li><span lang="en">how many more</span> — на сколько больше</li>
+    </ul>
+  </details>
+  <p data-role="status" aria-live="polite"></p>
+  <div class="card" data-role="problem">
+    <p data-role="english" lang="en"></p>
+  </div>
+  <p data-role="prompt"></p>
+  <div class="choices" data-role="choices" role="group" aria-label="Варианты ответа"></div>
+  <div class="viz-row actions">
+    <button type="button" class="btn btn-ghost" data-role="hint">Подсказка</button>
+    <button type="button" class="btn btn-primary" data-role="next" hidden>Дальше</button>
+  </div>
+  <p data-role="cue" aria-live="polite" hidden></p>
+  <p data-role="feedback" aria-live="polite" hidden></p>
+  <details data-role="translation" hidden>
+    <summary>Перевод и схема</summary>
+    <p data-role="russian"></p>
+  </details>
+  <details data-role="numeric" hidden>
+    <summary>Решить задачу и проверить число</summary>
+    <form data-role="numberForm">
+      <label for="numeric-answer" data-role="unit">Числовой ответ</label>
+      <div class="viz-row">
+        <input id="numeric-answer" data-role="number" inputmode="decimal" autocomplete="off" required>
+        <button class="btn" type="submit">Проверить число</button>
+      </div>
+      <p id="numeric-feedback" data-role="numberFeedback" aria-live="polite"></p>
+    </form>
+  </details>
+  <div class="viz-row actions" data-role="finish" hidden>
+    <button type="button" class="btn btn-primary" data-role="retry">Повторить задачи с ошибками</button>
+    <button type="button" class="btn" data-role="restart">Пройти все задачи</button>
+  </div>
+</section>
+<script>
+(() => {
+  const root = document.getElementById('fraction-reading');
+  // English condition, focus phrase, translation, correct statements, distractors.
+  const tasks = [
+    ["One fifth of the counters in a bag are red. There are 6 red counters. How many counters are in the bag altogether?",
+      "one fifth of … / altogether", "Одна пятая всех фишек в мешке — красные. Красных 6. Сколько фишек всего? 1/5 всех фишек = 6.",
+      ["Красные фишки — 1/5 всех фишек", "Все фишки в мешке"], ["Все фишки — 6", "Красные фишки — 5", "Только красные фишки", "Только фишки других цветов"]],
+    ["Three quarters of the pupils in a class bring a packed lunch. That is 24 pupils. How many pupils are there in the class?",
+      "that is = это / packed lunch = обед с собой", "Три четверти учеников приносят обед с собой. Это 24 ученика. Сколько учеников в классе? 3/4 класса = 24.",
+      ["24 ученика приносят обед с собой", "Число всех учеников класса"], ["24 — все ученики класса", "24 ученика не приносят обед", "Число учеников с обедом", "Число учеников без обеда"]],
+    ["Two thirds of a number is 18. What is the number?",
+      "two thirds of a number / the number", "Две трети некоторого числа равны 18. Чему равно это число? 2/3 числа = 18.",
+      ["18 — это две трети загаданного числа", "Само загаданное число"], ["Нужно взять две трети от 18", "18 — это одна треть числа", "Две трети от 18", "Одну треть загаданного числа"]],
+    ["A jug can hold 2 litres when full. It is three quarters full. How much water is in the jug?",
+      "when full / how much water is in the jug", "В полный кувшин помещается 2 литра. Сейчас он полон на три четверти. Сколько воды в нём сейчас? Целое = 2 л, вода сейчас = 3/4 от 2 л.",
+      ["2 литра — вместимость полного кувшина", "Сколько воды в кувшине сейчас"], ["2 литра — столько воды сейчас", "2 литра — столько места ещё свободно", "Вместимость полного кувшина", "Сколько воды нужно долить"]],
+    ["Ella spent 3/5 of her pocket money on a notebook. The notebook cost £9. How much pocket money did Ella have to begin with?",
+      "spent = потратила / to begin with = сначала", "Элла потратила 3/5 карманных денег на блокнот. Он стоил £9. Сколько денег у неё было изначально? 3/5 исходной суммы = £9.",
+      ["£9 — столько Элла потратила", "Сколько денег у Эллы было до покупки"], ["£9 — столько у Эллы осталось", "£9 — вся исходная сумма", "Сколько денег у Эллы осталось", "Сколько стоил блокнот"]],
+    ["Luca spent some of his pocket money. He has £12 left, which is 3/5 of the amount he had at first. How much did he have at first?",
+      "has £12 left / which is / at first", "Лука потратил часть карманных денег. У него осталось £12, то есть 3/5 исходной суммы. Сколько денег у него было сначала? Остаток 3/5 = £12.",
+      ["£12 — остаток, равный 3/5 исходной суммы", "Сколько денег было до покупки"], ["£12 — потраченные 3/5 суммы", "£12 — исходная сумма", "Сколько денег осталось", "Сколько денег Лука потратил"]],
+    ["By lunchtime, Imani had walked 4/7 of her route. She had walked 12 km. How long was the route in total?",
+      "had walked / route = маршрут / in total", "К обеду Имани прошла 4/7 маршрута. Она прошла 12 км. Какова длина всего маршрута? Пройденные 4/7 = 12 км.",
+      ["12 км — уже пройденная часть маршрута", "Полную длину маршрута"], ["12 км — ещё не пройденная часть", "12 км — весь маршрут", "Оставшееся расстояние", "Уже пройденное расстояние"]],
+    ["A tank is three eighths full. There are 15 litres of water in it. How much water can the tank hold when full?",
+      "three eighths full / can … hold when full", "Бак заполнен на три восьмых. В нём 15 литров воды. Сколько воды помещается в полный бак? 3/8 полной вместимости = 15 л.",
+      ["15 л — вода, которая сейчас в баке", "Вместимость полного бака"], ["15 л — сколько ещё можно долить", "15 л — вместимость полного бака", "Сколько воды в баке сейчас", "Сколько воды нужно долить"]],
+    ["Five sixths of the books on a shelf are fiction. The remaining 8 books are non-fiction. How many books are on the shelf in total?",
+      "the remaining 8 books = оставшиеся 8 книг", "Пять шестых книг на полке — художественные. Остальные 8 — нехудожественные. Сколько книг всего? Оставшаяся 1/6 = 8 книг.",
+      ["8 книг — оставшаяся 1/6 всех книг", "Число всех книг на полке"], ["8 книг — художественные 5/6", "8 книг — все книги на полке", "Число художественных книг", "Число нехудожественных книг"]],
+    ["Nora used 2/7 of a roll of ribbon. There are 25 metres left. How long was the ribbon before Nora used any of it?",
+      "used / left / before Nora used any of it", "Нора использовала 2/7 ленты. Осталось 25 метров. Какой была длина ленты до того, как Нора её использовала? Остаток 5/7 = 25 м.",
+      ["25 м — оставшиеся 5/7 ленты", "Исходную длину ленты"], ["25 м — использованные 2/7 ленты", "25 м — исходная длина ленты", "Длину использованной ленты", "Длину оставшейся ленты"]],
+    ["Sam has read 36 pages of a 60-page book. How many more pages does he need to read to finish the book?",
+      "a 60-page book / how many more … to finish", "Сэм прочитал 36 страниц книги, в которой 60 страниц. Сколько страниц осталось прочитать? Целое = 60, прочитано 36, осталось ?",
+      ["60 страниц — объём всей книги", "Сколько страниц осталось прочитать"], ["60 страниц ещё нужно прочитать", "60 страниц уже прочитано", "Сколько страниц уже прочитано", "Сколько страниц во всей книге"]],
+    ["Three quarters of rope A is 15 m. Two thirds of rope B is 16 m. How much longer is rope B than rope A?",
+      "of rope A / of rope B / how much longer … than", "Три четверти верёвки A — 15 м, две трети верёвки B — 16 м. На сколько верёвка B длиннее A? 3/4 от A = 15 м, 2/3 от B = 16 м. Сравнивают полные длины.",
+      ["15 м и 16 м — части двух разных верёвок", "На сколько полная длина B больше полной длины A"], ["15 м и 16 м — полные длины верёвок", "15 м и 16 м — две части верёвки A", "Только полную длину верёвки B", "Общую длину двух верёвок"]]
+  ];
+  const fields = Object.fromEntries(Array.from(root.querySelectorAll('[data-role]'), item => [item.dataset.role, item]));
+  const all = tasks.map((_, index) => index);
+  const numericAnswers = [
+    [30, 'фишки'], [32, 'ученики'], [27, 'число'], [1.5, 'литры'],
+    [15, 'фунты'], [20, 'фунты'], [21, 'км'], [40, 'литры'],
+    [48, 'книги'], [35, 'метры'], [24, 'страницы'], [4, 'метры']
+  ];
+  const prompts = ['Что известно из условия?', 'Что просят найти?'];
+  let queue, position, step, mistakes, clean, answered;
+
+  function start(indices) {
+    queue = indices;
+    position = 0;
+    step = 0;
+    mistakes = new Set();
+    clean = 0;
+    fields.finish.hidden = true;
+    fields.problem.hidden = false;
+    fields.prompt.hidden = false;
+    render();
+    fields.choices.querySelector('button').focus();
+  }
+
+  function render() {
+    const id = queue[position];
+    const [english, hint, russian, correct, wrong] = tasks[id];
+    const options = [correct[step], ...wrong.slice(step * 2, step * 2 + 2)];
+    const rotation = (id + Math.floor(id / 3) + step * 2) % options.length;
+    answered = false;
+    fields.status.textContent = 'Задача ' + (position + 1) + ' из ' + queue.length + ' · Вопрос ' + (step + 1) + ' из 2';
+    fields.english.textContent = english;
+    fields.prompt.textContent = prompts[step];
+    fields.cue.textContent = hint;
+    fields.russian.textContent = russian;
+    fields.choices.replaceChildren();
+    fields.cue.hidden = fields.feedback.hidden = fields.next.hidden = fields.translation.hidden = true;
+    fields.translation.open = false;
+    fields.numeric.hidden = true;
+    fields.numeric.open = false;
+    fields.number.value = '';
+    fields.numberFeedback.textContent = '';
+    fields.unit.textContent = 'Числовой ответ (' + numericAnswers[id][1] + ')';
+    fields.hint.hidden = false;
+    for (const option of [...options.slice(rotation), ...options.slice(0, rotation)]) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn';
+      button.textContent = option;
+      button.addEventListener('click', () => {
+        if (answered) return;
+        fields.feedback.hidden = false;
+        if (option !== correct[step]) {
+          mistakes.add(id);
+          fields.cue.hidden = false;
+          fields.feedback.textContent = 'Попробуй ещё раз. Найди подсказку в английском условии и перечитай эту часть.';
+          return;
+        }
+        answered = true;
+        button.classList.add('correct');
+        if (step === 1 && !mistakes.has(id)) clean++;
+        fields.feedback.textContent = 'Верно. ' + correct[step] + '.';
+        for (const choice of fields.choices.children) choice.disabled = true;
+        fields.next.textContent = step === 0 ? 'К следующему вопросу' : position + 1 < queue.length ? 'К следующей задаче' : 'Посмотреть результат';
+        fields.next.hidden = false;
+        fields.translation.hidden = step === 0;
+        fields.numeric.hidden = step === 0;
+        fields.next.focus();
+      });
+      fields.choices.append(button);
+    }
+  }
+
+  fields.hint.addEventListener('click', () => { fields.cue.hidden = !fields.cue.hidden; });
+  fields.next.addEventListener('click', () => {
+    if (step === 0 || position + 1 < queue.length) {
+      if (step === 1) position++;
+      step = 1 - step;
+      render();
+      fields.choices.querySelector('button').focus();
+      return;
+    }
+    fields.status.textContent = 'Задачи без ошибок: ' + clean + ' из ' + queue.length + '.';
+    fields.choices.replaceChildren();
+    for (const key of ['next', 'hint', 'cue', 'feedback', 'translation', 'numeric', 'problem', 'prompt']) fields[key].hidden = true;
+    fields.finish.hidden = false;
+    fields.retry.hidden = mistakes.size === 0;
+    (mistakes.size ? fields.retry : fields.restart).focus();
+  });
+  fields.numberForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const value = fields.number.value.trim().replace(',', '.');
+    const expected = numericAnswers[queue[position]][0];
+    if (!/^\d+(\.\d+)?$/.test(value)) {
+      fields.numberFeedback.textContent = 'Введи число, например 12 или 1,5.';
+      return;
+    }
+    fields.numberFeedback.textContent = Number(value) === expected
+      ? 'Верно!'
+      : 'Пока не сходится. Сверь вычисление со схемой и попробуй ещё раз.';
+  });
+  fields.retry.addEventListener('click', () => start([...mistakes]));
+  fields.restart.addEventListener('click', () => start(all));
+  queue = all;
+  position = step = clean = 0;
+  mistakes = new Set();
+  render();
+})();
+</script>
+
+</main>
+</body>
+</html>
